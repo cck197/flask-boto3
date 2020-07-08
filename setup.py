@@ -1,13 +1,14 @@
-# https://stackoverflow.com/a/49837302
-try: # for pip >= 10
-    from pip._internal.req import parse_requirements
-except ImportError: # for pip <= 9.0.3
-    from pip.req import parse_requirements
+from os import path
 from setuptools import setup
 
-# Requirements
-install_reqs = parse_requirements('requirements.txt', session='dummy')
-reqs = [str(ir.req) for ir in install_reqs]
+BASE_DIR = path.abspath(path.dirname(__file__))
+
+def parse_requirements(filename):
+    """ load requirements from a pip requirements file """
+    lines = (line.strip() for line in open(filename))
+    return [line for line in lines if line and not line.startswith("#")]
+
+reqs = parse_requirements('requirements.txt')
 
 setup(
     name='Flask-Boto3',
